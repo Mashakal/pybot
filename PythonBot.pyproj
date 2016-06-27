@@ -27,11 +27,17 @@
     </Compile>
     <Compile Include="bot.py" />
     <Compile Include="deploy.py" />
+    <Compile Include="_deploy\deploy_credentials.py">
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Content Include="requirements.txt" />
     <Content Include="runtime.txt" />
     <Content Include="web.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="_deploy\" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
