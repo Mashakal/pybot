@@ -12,7 +12,7 @@ def UserAddedToConversation(msg):
 
 def Message(msg):
     key, _, text = msg.text.partition(' ')
-    if key == 'calculate:
+    if key == 'calculate':
         try:
             env = dict(CALC_ENV)
             return "Looks like that equals {}".format(eval(text, env, {}))
