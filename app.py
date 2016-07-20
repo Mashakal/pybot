@@ -1,9 +1,8 @@
 import os
 import sys
+import datetime
 from bottle import get, post, request, auth_basic
 
-# For debugging only.
-from Essentials import file_to_json, json_to_file
 
 if '--debug' in sys.argv[1:] or 'SERVER_DEBUG' in os.environ:
     # Debug mode will enable more verbose output in the console window.
@@ -38,7 +37,7 @@ class MessageList:
     def __delitem__(self, index):
         del self._d[index]
 
-class Message:
+class Message(dict):
     @classmethod
     def wrap(cls, obj):
         if isinstance(obj, dict):
@@ -65,21 +64,19 @@ class Message:
     def get(self, key, default=None):
         if not self._d:
             return self
-
         r = self._d.get(key, _SENTINEL)
         if r is _SENTINEL:
             return default
-
         return self.wrap(r)
 
-    def __getattr__(self, attr):
-        r = self.get(attr, _SENTINEL)
-        if r is _SENTINEL:
-            return Message(None)
-        return self.wrap(r)
+    #def __getattr__(self, attr):
+    #    r = self.get(attr, _SENTINEL)
+    #    if r is _SENTINEL:
+    #        return Message(None)
+    #    return self.wrap(r)
 
-    def __setattr__(self, attr, value):
-        self._d[attr] = value
+    #def __setattr__(self, attr, value):
+    #    self._d[attr] = value
 
     def __delattr__(self, attr):
         del self._d[attr]
@@ -109,25 +106,46 @@ def home():
 @post('/api/messages')
 #@auth_basic(check_auth)
 def root():
-    print("The json is: {}".format(request.json))
+    msg = Message(request.json)
+
     try:
-        j = file_to_json('sample_request.json')
-    except FileNotFoundError:
-        j = request.json
-        json_to_file(j, 'sample_request.json')
+        handler = getattr(bot, msg._d['type'])
+    except AttributeError:
+        res = "TODO: " + msg._d['type']
+    else:
+        print("Should be calling handler.")
+        res = handler(msg)
 
-    #msg = Message(request.json)
-    print("\nYou've made it here.\n")
-    #try:
-    #    handler = getattr(bot, msg.type)
-    #except AttributeError:
-    #    res = "TODO: " + msg.type
-    #else:
-    #    res = handler(msg)
+    if isinstance(res, str):
+        print(res)
+        return {
+            'type': 'message',
+            'timestamp': '2016-07-20T14:04:45.8448671Z',
+            'from': {
+                'id': '56800324',
+                'name': 'Bot1',
+            },
+            'serviceUrl': 'http://localhost:9000/',
+            'channelID': 'emulator',
+            "id": msg._d['id'],
+            'conversation': {
+                'isGroup': False,
+                'id': '8a684db8',
+                'name': 'Conv1'
+            },
+            'recipient': {
+                'id': '2c1c7fa3',
+                'name': 'User1'
+            },
+            'text': res,
+            'attachments': [],
+            'entities': []
+        }
 
-    #if isinstance(res, str):
-    #    return {'text': res}
-    #return res
+    return res
+
+def test_post(res):
+    pass
 
 
 

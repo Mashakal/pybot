@@ -12,7 +12,7 @@
   "attachments": [ ],
   "conversation": {
     "id": "8a684db8",
-    "isGroup": False,
+    "isGroup": false,
     "name": "Conv1"
   },
   "recipient": {

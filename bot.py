@@ -10,13 +10,13 @@ def BotAddedToConversation(msg):
 def UserAddedToConversation(msg):
     return "Hi {.mentions[0].text}! Glad you could make it!".format(msg)
 
-def Message(msg):
-    key, _, text = msg.text.partition(' ')
-    if key == 'calculate':
+def message(msg):
+    key, _, text = msg['text'].partition(' ')
+    if key.lower() == 'calculate':
         try:
             env = dict(CALC_ENV)
             return "Looks like that equals {}".format(eval(text, env, {}))
         except:
-            return "Sorry {.from.name}, I couldn't calculate that.".format(msg)
+            return "Sorry {['from']['name']}, I couldn't calculate that.".format(msg)
     
-    return "Sorry {.from.name}, I didn't understand that.".format(msg)
+    return "Sorry {['from']['name']}, I didn't understand that.".format(msg)

@@ -6,7 +6,8 @@
     <ProjectGuid>8ad3a316-5cd7-43ac-b4a7-26fec322579c</ProjectGuid>
     <ProjectHome>.</ProjectHome>
     <StartupFile>app.py</StartupFile>
-    <SearchPath>..\Minerva\Minerva\Debugging\</SearchPath>
+    <SearchPath>
+    </SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
     <OutputPath>.</OutputPath>
     <Name>PythonBot</Name>
