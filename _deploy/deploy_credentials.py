@@ -13,5 +13,5 @@ SUBSCRIPTION_ID = "91cd8148-679a-49b6-bb4d-c263bc6a11c3"
 #RESOURCE_ID = "/subscriptions/91cd8148-679a-49b6-bb4d-c263bc6a11c3/resourceGroups/Default-Web-WestUS/providers/Microsoft.Web/sites/ProjectTyto"
 
 # PTVS HELP BOT INFO:
-APP_ID = 'c4065c19-d635-472a-8f61-b43bc0e0d105'
-PW = 'qq4CcZECz7SGnzXBXgNk35n'
+#APP_ID = 'c4065c19-d635-472a-8f61-b43bc0e0d105'
+#PW = 'qq4CcZECz7SGnzXBXgNk35n'

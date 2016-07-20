@@ -75,7 +75,7 @@ LOCATION = "West US"
 
 COMPANY_NAME = "Contoso"
 DEPLOYMENT = "ContosoBots"
-WEBSITE = "pybot" + uuid.uuid4().hex[:8].lower()
+WEBSITE = "pybot" + uuid.uuid4().hex[:8].lower() # "pybot2960d70527fb4c6cb425417eec43596c"
 STORAGE = 's' + uuid.uuid4().hex[:23].lower()
 
 WEBSITE_SOURCE = "https://github.com/zooba/pybot.git"
@@ -181,8 +181,8 @@ TEMPLATE = {
             #").key1]",
             
             # Not very secret, but this is just for fun
-            "APP_ID": "mybotapp",
-            "APP_SECRET": "3c8a5686b1b14135b9112620603c5575",
+            "APP_ID": "c4065c19-d635-472a-8f61-b43bc0e0d105",
+            "APP_SECRET": "qq4CcZECz7SGnzXBXgNk35n",
           }
         },
 

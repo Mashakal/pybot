@@ -2,6 +2,9 @@ import os
 import sys
 from bottle import get, post, request, auth_basic
 
+# For debugging only.
+from Essentials import file_to_json, json_to_file
+
 if '--debug' in sys.argv[1:] or 'SERVER_DEBUG' in os.environ:
     # Debug mode will enable more verbose output in the console window.
     # It must be set at the beginning of the script.
@@ -106,18 +109,25 @@ def home():
 @post('/api/messages')
 #@auth_basic(check_auth)
 def root():
-    msg = Message(request.json)
-
+    print("The json is: {}".format(request.json))
     try:
-        handler = getattr(bot, msg.type)
-    except AttributeError:
-        res = "TODO: " + msg.type
-    else:
-        res = handler(msg)
+        j = file_to_json('sample_request.json')
+    except FileNotFoundError:
+        j = request.json
+        json_to_file(j, 'sample_request.json')
 
-    if isinstance(res, str):
-        return {'text': res}
-    return res
+    #msg = Message(request.json)
+    print("\nYou've made it here.\n")
+    #try:
+    #    handler = getattr(bot, msg.type)
+    #except AttributeError:
+    #    res = "TODO: " + msg.type
+    #else:
+    #    res = handler(msg)
+
+    #if isinstance(res, str):
+    #    return {'text': res}
+    #return res
 
 
 
