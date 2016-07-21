@@ -1,7 +1,10 @@
 import os
-import requests
 import sys
+
+import requests
 from bottle import get, post, request, auth_basic
+
+import api
 
 
 if '--debug' in sys.argv[1:] or 'SERVER_DEBUG' in os.environ:
@@ -10,13 +13,17 @@ if '--debug' in sys.argv[1:] or 'SERVER_DEBUG' in os.environ:
     import bottle
     bottle.debug(True)
 
+
 APP_ID = os.getenv("APP_ID", "YourAppId")
 APP_SECRET = os.getenv("APP_SECRET", "YourAppSecret")
+
 
 def check_auth(id, secret):
     return id == APP_ID and secret == APP_SECRET
 
+
 _SENTINEL = object()
+
 
 class MessageList:
     def __init__(self, d):
@@ -36,6 +43,7 @@ class MessageList:
 
     def __delitem__(self, index):
         del self._d[index]
+
 
 class Message(dict):
     @classmethod
@@ -90,6 +98,7 @@ class Message(dict):
     def __len__(self):
         return len(self._d)
 
+
 import bot
 
 @get('/')
@@ -103,55 +112,40 @@ def home():
     
     return "TODO: home page"
 
+
 @post('/api/messages')
 #@auth_basic(check_auth)
 def root():
     msg = Message(request.json)
 
     try:
-        handler = getattr(bot, msg._d['type'])
+        handler = getattr(bot, msg.type)
     except AttributeError:
-        res = "TODO: " + msg._d['type']
+        res = "TODO: " + msg.type
     else:
         res = handler(msg)
 
     if isinstance(res, str):
         print(res)
-
-        r = dict(msg._d)
-        r['from'], r['recipient'] = r['recipient'], r['from']
-        r['text'] = res
-        requests.post(msg.serviceUrl, json=r)
-        return {}
-        #return {
-        #    'type': 'message',
-        #    'timestamp': '2016-07-20T14:04:45.8448671Z',
-        #    'from': {
-        #        'id': '56800324',
-        #        'name': 'Bot1',
-        #    },
-        #    'serviceUrl': 'http://localhost:9000/',
-        #    'channelID': 'emulator',
-        #    "id": msg._d['id'],
-        #    'conversation': {
-        #        'isGroup': False,
-        #        'id': '8a684db8',
-        #        'name': 'Conv1'
-        #    },
-        #    'recipient': {
-        #        'id': '2c1c7fa3',
-        #        'name': 'User1'
-        #    },
-        #    'text': res,
-        #    'attachments': [],
-        #    'entities': []
-        #}
+        reply(msg, res)
+        return
 
     return res
 
-def test_post(res):
-    pass
 
+def reply(msg, text):
+    """Sends text as a reply to msg in a conversation."""
+    reply = format_message_for_reply(msg, text)
+    path = api.buld_reply_url(reply)
+    requests.post(path, json=reply)
+
+
+def format_message_for_reply(message, response):
+    """Constructs a dict from message and readies it for replying."""
+    r = dict(message._d)
+    r['from'], r['recipient'] = r['recipient'], r['from']
+    r['text'] = response
+    return r
 
 
 if __name__ == '__main__':
