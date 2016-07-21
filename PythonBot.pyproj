@@ -22,6 +22,9 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="api.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="app.py">
       <SubType>Code</SubType>
     </Compile>
