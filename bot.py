@@ -17,6 +17,7 @@ def message(msg):
             env = dict(CALC_ENV)
             return "Looks like that equals {}".format(eval(text, env, {}))
         except:
-            return "Sorry {['from']['name']}, I couldn't calculate that.".format(msg)
+            return "Sorry {[from][name]}, I couldn't calculate that.".format(msg)
     
-    return "Sorry {['from']['name']}, I didn't understand that.".format(msg)
+    return "Sorry {}, I didn't understand that.".format(msg['from']['name'])
+

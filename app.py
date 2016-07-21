@@ -1,6 +1,6 @@
 import os
+import requests
 import sys
-import datetime
 from bottle import get, post, request, auth_basic
 
 
@@ -47,7 +47,7 @@ class Message(dict):
         return obj
 
     def __init__(self, d):
-        self._d = dict(d) if d else None
+        object.__setattr__(self, '_d', dict(d) if d else None)
 
     def __getitem__(self, key):
         r = self.get(key, _SENTINEL)
@@ -69,14 +69,14 @@ class Message(dict):
             return default
         return self.wrap(r)
 
-    #def __getattr__(self, attr):
-    #    r = self.get(attr, _SENTINEL)
-    #    if r is _SENTINEL:
-    #        return Message(None)
-    #    return self.wrap(r)
+    def __getattr__(self, attr):
+        r = self.get(attr, _SENTINEL)
+        if r is _SENTINEL:
+            return Message(None)
+        return self.wrap(r)
 
-    #def __setattr__(self, attr, value):
-    #    self._d[attr] = value
+    def __setattr__(self, attr, value):
+        self._d[attr] = value
 
     def __delattr__(self, attr):
         del self._d[attr]
@@ -113,34 +113,39 @@ def root():
     except AttributeError:
         res = "TODO: " + msg._d['type']
     else:
-        print("Should be calling handler.")
         res = handler(msg)
 
     if isinstance(res, str):
         print(res)
-        return {
-            'type': 'message',
-            'timestamp': '2016-07-20T14:04:45.8448671Z',
-            'from': {
-                'id': '56800324',
-                'name': 'Bot1',
-            },
-            'serviceUrl': 'http://localhost:9000/',
-            'channelID': 'emulator',
-            "id": msg._d['id'],
-            'conversation': {
-                'isGroup': False,
-                'id': '8a684db8',
-                'name': 'Conv1'
-            },
-            'recipient': {
-                'id': '2c1c7fa3',
-                'name': 'User1'
-            },
-            'text': res,
-            'attachments': [],
-            'entities': []
-        }
+
+        r = dict(msg._d)
+        r['from'], r['recipient'] = r['recipient'], r['from']
+        r['text'] = res
+        requests.post(msg.serviceUrl, json=r)
+        return {}
+        #return {
+        #    'type': 'message',
+        #    'timestamp': '2016-07-20T14:04:45.8448671Z',
+        #    'from': {
+        #        'id': '56800324',
+        #        'name': 'Bot1',
+        #    },
+        #    'serviceUrl': 'http://localhost:9000/',
+        #    'channelID': 'emulator',
+        #    "id": msg._d['id'],
+        #    'conversation': {
+        #        'isGroup': False,
+        #        'id': '8a684db8',
+        #        'name': 'Conv1'
+        #    },
+        #    'recipient': {
+        #        'id': '2c1c7fa3',
+        #        'name': 'User1'
+        #    },
+        #    'text': res,
+        #    'attachments': [],
+        #    'entities': []
+        #}
 
     return res
 
