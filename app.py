@@ -118,6 +118,20 @@ def home():
 def root():
     msg = Message(request.json)
 
+    state_data = get_state_info(msg)
+
+    try:
+        state_data['data']
+    except KeyError:
+        print("Did not find any state data.")
+        state_data['data'] = {}
+    else:
+        last_message = state_data['data']['last_message']
+
+    print("Your last message was: {}".format(last_message))
+
+    state_data['data']['last_message'] = msg.text
+
     try:
         handler = getattr(bot, msg.type)
     except AttributeError:
@@ -128,16 +142,18 @@ def root():
     if isinstance(res, str):
         print(res)
         reply(msg, res)
-        return
 
-    return res
+    # Update the state data.
+    send_state_data(msg, state_data)
+    
+    return
 
 
 def reply(msg, text):
     """Sends text as a reply to msg in a conversation."""
-    reply = format_message_for_reply(msg, text)
-    path = api.buld_reply_url(reply)
-    requests.post(path, json=reply)
+    reply_data = format_message_for_reply(msg, text)
+    path = api.build_message_url(reply_data)
+    requests.post(path, json=reply_data)
 
 
 def format_message_for_reply(message, response):
@@ -146,6 +162,18 @@ def format_message_for_reply(message, response):
     r['from'], r['recipient'] = r['recipient'], r['from']
     r['text'] = response
     return r
+
+
+def get_state_info(message):
+    data = dict(message._d)
+    path = api.build_state_url(data)
+    response = requests.get(path)
+    return response.json()
+
+def send_state_data(message, state_data):
+    data = dict(message._d)
+    path = api.build_state_url(data)
+    response = requests.post(path, json=state_data)
 
 
 if __name__ == '__main__':
