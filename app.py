@@ -4,7 +4,7 @@ import sys
 import requests
 from bottle import get, post, request, auth_basic
 
-import api
+import BotFrameworkApi as api
 
 
 if '--debug' in sys.argv[1:] or 'SERVER_DEBUG' in os.environ:
@@ -125,7 +125,7 @@ def root():
         res = handler(msg)
 
     if isinstance(res, str):
-        print(res)
+        print("{}\n{}".format(msg.text, res))
         reply(msg, res)
            
     return
