@@ -98,7 +98,6 @@ class Message(dict):
     def __len__(self):
         return len(self._d)
 
-
 import bot
 
 @get('/')
@@ -118,20 +117,6 @@ def home():
 def root():
     msg = Message(request.json)
 
-    state_data = get_state_info(msg)
-
-    try:
-        state_data['data']
-    except KeyError:
-        print("Did not find any state data.")
-        state_data['data'] = {}
-    else:
-        last_message = state_data['data']['last_message']
-
-    print("Your last message was: {}".format(last_message))
-
-    state_data['data']['last_message'] = msg.text
-
     try:
         handler = getattr(bot, msg.type)
     except AttributeError:
@@ -142,10 +127,7 @@ def root():
     if isinstance(res, str):
         print(res)
         reply(msg, res)
-
-    # Update the state data.
-    send_state_data(msg, state_data)
-    
+           
     return
 
 
@@ -182,9 +164,9 @@ if __name__ == '__main__':
     # Starts a local test server.
     HOST = os.environ.get('SERVER_HOST', 'localhost')
     try:
-        PORT = int(os.environ.get('SERVER_PORT', '5555'))
+        PORT = int(os.environ.get('SERVER_PORT', '3978'))
     except ValueError:
-        PORT = 5555
+        PORT = 3978
     bottle.run(server='wsgiref', host=HOST, port=PORT)
 else:
     import bottle

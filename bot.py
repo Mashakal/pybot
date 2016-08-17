@@ -21,3 +21,5 @@ def message(msg):
     
     return "Sorry {.from.name}, I didn't understand that.".format(msg)
 
+def home():
+    return "The homepage has not yet been created.  Enjoy this message instead."

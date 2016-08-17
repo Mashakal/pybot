@@ -71,12 +71,12 @@ from _deploy.deploy_helpers import get_package, print_operation_results, Site
 # Some names include random UUIDs to avoid collisions.
 # These are not necessary in controlled environments.
 
-RESOURCE_GROUP = "pybot" + uuid.uuid4().hex
+RESOURCE_GROUP = "pybotcalculator2301"
 LOCATION = "West US"
 
 COMPANY_NAME = "Contoso"
 DEPLOYMENT = "ContosoInternalApps"
-WEBSITE = "pybot" + uuid.uuid4().hex
+WEBSITE = "pybotcalculator2301"
 
 DEPLOY_ROOT = pathlib.Path(__file__).absolute().parent.parent
 
